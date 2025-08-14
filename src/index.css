@@ -36,6 +36,12 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    /* Birthday theme colors */
+    --birthday-gold: 43 96% 56%;
+    --birthday-purple: 271 91% 65%;
+    --birthday-pink: 330 81% 60%;
+    --birthday-blue: 217 91% 60%;
+    
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;

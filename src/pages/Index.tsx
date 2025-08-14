@@ -1,17 +1,42 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { BirthdayGreeting } from '@/components/BirthdayGreeting';
+import { WishingCoin } from '@/components/WishingCoin';
+import { WishForm } from '@/components/WishForm';
+import { SuccessAnimation } from '@/components/SuccessAnimation';
+
+type AppState = 'greeting' | 'coin' | 'form' | 'success';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-white text-black border-4 border-red-500">
-      <div className="text-center bg-gray-100 p-8 rounded-lg border-2 border-blue-500">
-        <h1 className="text-4xl font-bold mb-4 text-black">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-        <div className="mt-4 text-sm text-red-600">
-          Debug: If you can see this text, the component is rendering correctly
-        </div>
-      </div>
-    </div>
-  );
+  const [currentState, setCurrentState] = useState<AppState>('greeting');
+
+  const handleGreetingComplete = () => {
+    setCurrentState('coin');
+  };
+
+  const handleCoinDrop = () => {
+    setCurrentState('form');
+  };
+
+  const handleFormSuccess = () => {
+    setCurrentState('success');
+  };
+
+  const renderCurrentState = () => {
+    switch (currentState) {
+      case 'greeting':
+        return <BirthdayGreeting onAnimationComplete={handleGreetingComplete} />;
+      case 'coin':
+        return <WishingCoin onCoinDrop={handleCoinDrop} />;
+      case 'form':
+        return <WishForm onSuccess={handleFormSuccess} />;
+      case 'success':
+        return <SuccessAnimation />;
+      default:
+        return <BirthdayGreeting onAnimationComplete={handleGreetingComplete} />;
+    }
+  };
+
+  return <div className="min-h-screen">{renderCurrentState()}</div>;
 };
 
 export default Index;
