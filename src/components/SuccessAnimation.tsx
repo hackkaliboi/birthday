@@ -1,12 +1,18 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const SuccessAnimation = () => {
   const [showFireworks, setShowFireworks] = useState(false);
+  const { playSound } = useSoundEffects();
 
   useEffect(() => {
     setShowFireworks(true);
-  }, []);
+    playSound('confetti');
+    
+    // Play additional celebration sound after a delay
+    setTimeout(() => playSound('sparkle'), 1000);
+  }, [playSound]);
 
   // Generate firework bursts
   const fireworks = Array.from({ length: 20 }, (_, i) => (
@@ -68,21 +74,21 @@ export const SuccessAnimation = () => {
         </motion.div>
 
         <motion.h2
-          className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-birthday-gold via-birthday-purple to-birthday-pink bg-clip-text text-transparent mb-4"
+          className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-birthday-gold via-birthday-purple to-birthday-pink bg-clip-text text-transparent mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          Your wish has been saved!
+          Website Idea Submitted! 🚀
         </motion.h2>
 
         <motion.p
-          className="text-xl text-foreground/80 mb-6"
+          className="text-lg md:text-xl text-foreground/80 mb-6 px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          Thank you for sharing your birthday wish! 🌟
+          Thank you for sharing your amazing website idea! Your creativity helps make birthdays even more special! 🌟💻
         </motion.p>
 
         <motion.div

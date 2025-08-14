@@ -2,48 +2,57 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface WishFormProps {
   onSuccess: () => void;
 }
 
 export const WishForm = ({ onSuccess }: WishFormProps) => {
-  const [name, setName] = useState('');
-  const [wish, setWish] = useState('');
-  const [siteIdea, setSiteIdea] = useState('');
+  const [websiteIdea, setWebsiteIdea] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { playSound } = useSoundEffects();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !wish.trim() || !siteIdea.trim()) {
-      toast.error('Please fill in all fields');
+    if (!websiteIdea.trim()) {
+      playSound('error');
+      toast.error('Please describe your website idea');
       return;
     }
 
+    if (websiteIdea.trim().length < 10) {
+      playSound('error');
+      toast.error('Please provide more details about your website idea (at least 10 characters)');
+      return;
+    }
+
+    playSound('click');
     setIsSubmitting(true);
 
     try {
       const { error } = await supabase
         .from('wishes')
         .insert({
-          name: name.trim(),
-          wish: wish.trim(),
-          site_idea: siteIdea.trim()
+          name: 'Anonymous',
+          wish: 'Website Idea Submission',
+          site_idea: websiteIdea.trim()
         });
 
       if (error) {
         throw error;
       }
 
-      toast.success('Your wish has been saved! 🎉');
+      playSound('success');
+      toast.success('Your website idea has been submitted! 🎉');
       onSuccess();
     } catch (error) {
-      console.error('Error saving wish:', error);
-      toast.error('Failed to save your wish. Please try again.');
+      console.error('Error saving website idea:', error);
+      playSound('error');
+      toast.error('Failed to submit your idea. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -63,62 +72,42 @@ export const WishForm = ({ onSuccess }: WishFormProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-birthday-gold via-birthday-purple to-birthday-pink bg-clip-text text-transparent mb-2">
-            Make a Birthday Wish! 🌟
+          <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-birthday-gold via-birthday-purple to-birthday-pink bg-clip-text text-transparent mb-2">
+            Share Your Website Idea! 💻✨
           </h2>
-          <p className="text-muted-foreground text-sm">
-            Enter your website idea and it will be delivered as a birthday wish
+          <p className="text-muted-foreground text-sm md:text-base">
+            Tell us about the amazing website you'd like to create
           </p>
         </motion.div>
 
         <motion.form
           onSubmit={handleSubmit}
-          className="space-y-4"
+          className="space-y-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-              Your Name
-            </label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              disabled={isSubmitting}
-              className="w-full"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="wish" className="block text-sm font-medium text-foreground mb-2">
-              Birthday Wish
+            <label htmlFor="websiteIdea" className="block text-sm font-medium text-foreground mb-3">
+              Your Website Idea 🎆
             </label>
             <Textarea
-              id="wish"
-              value={wish}
-              onChange={(e) => setWish(e.target.value)}
-              placeholder="What's your birthday wish for your mentor?"
+              id="websiteIdea"
+              value={websiteIdea}
+              onChange={(e) => setWebsiteIdea(e.target.value)}
+              placeholder="Describe your amazing website idea... What would it do? Who would use it? What makes it special?"
               disabled={isSubmitting}
-              className="w-full min-h-[80px]"
+              className="w-full min-h-[120px] md:min-h-[140px] resize-none"
+              maxLength={1000}
             />
-          </div>
-
-          <div>
-            <label htmlFor="siteIdea" className="block text-sm font-medium text-foreground mb-2">
-              Website Idea
-            </label>
-            <Textarea
-              id="siteIdea"
-              value={siteIdea}
-              onChange={(e) => setSiteIdea(e.target.value)}
-              placeholder="Describe your website idea that you'd like to build..."
-              disabled={isSubmitting}
-              className="w-full min-h-[100px]"
-            />
+            <div className="mt-2 flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {websiteIdea.length >= 10 ? '✓' : 'Minimum 10 characters'}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {websiteIdea.length}/1000
+              </span>
+            </div>
           </div>
 
           <motion.div
@@ -137,10 +126,10 @@ export const WishForm = ({ onSuccess }: WishFormProps) => {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   />
-                  Sending Wish...
+                  Submitting Idea...
                 </>
               ) : (
-                'Submit Birthday Wish 🎂'
+                'Submit Website Idea 🎆💻'
               )}
             </Button>
           </motion.div>

@@ -3,6 +3,8 @@ import { BirthdayGreeting } from '@/components/BirthdayGreeting';
 import { WishingCoin } from '@/components/WishingCoin';
 import { WishForm } from '@/components/WishForm';
 import { SuccessAnimation } from '@/components/SuccessAnimation';
+import { ThemeSelector } from '@/components/ThemeSelector';
+import { SoundControl } from '@/components/SoundControl';
 
 type AppState = 'greeting' | 'coin' | 'form' | 'success';
 
@@ -36,7 +38,13 @@ const Index = () => {
     }
   };
 
-  return <div className="min-h-screen">{renderCurrentState()}</div>;
+  return (
+    <div className="min-h-screen relative">
+      {renderCurrentState()}
+      <SoundControl />
+      <ThemeSelector />
+    </div>
+  );
 };
 
 export default Index;

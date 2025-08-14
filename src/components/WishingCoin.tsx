@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface WishingCoinProps {
   onCoinDrop: () => void;
@@ -7,8 +8,12 @@ interface WishingCoinProps {
 
 export const WishingCoin = ({ onCoinDrop }: WishingCoinProps) => {
   const [isDropping, setIsDropping] = useState(false);
+  const { playSound } = useSoundEffects();
 
   const handleCoinClick = () => {
+    if (isDropping) return;
+    
+    playSound('coin');
     setIsDropping(true);
     setTimeout(() => {
       onCoinDrop();

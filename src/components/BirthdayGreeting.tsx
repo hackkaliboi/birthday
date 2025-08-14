@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface BirthdayGreetingProps {
   onAnimationComplete: () => void;
@@ -7,15 +9,20 @@ interface BirthdayGreetingProps {
 
 export const BirthdayGreeting = ({ onAnimationComplete }: BirthdayGreetingProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const { theme, themes } = useTheme();
+  const { playSound } = useSoundEffects();
+  const currentTheme = themes[theme];
 
   useEffect(() => {
     setShowConfetti(true);
+    playSound('confetti');
+    
     const timer = setTimeout(() => {
       onAnimationComplete();
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [onAnimationComplete]);
+  }, [onAnimationComplete, playSound]);
 
   // Generate confetti pieces
   const confettiPieces = Array.from({ length: 50 }, (_, i) => (
@@ -75,7 +82,7 @@ export const BirthdayGreeting = ({ onAnimationComplete }: BirthdayGreetingProps)
   ));
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-birthday-purple/20 via-birthday-pink/20 to-birthday-blue/20 flex items-center justify-center overflow-hidden">
+    <div className={`fixed inset-0 bg-gradient-to-br ${currentTheme.colors.background} flex items-center justify-center overflow-hidden`}>
       {/* Confetti */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none">
